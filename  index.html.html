@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>诗文冒险岛｜高中古诗文闯关</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f3e9;color:#26392f;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif}.wrap{max-width:820px;margin:auto;padding:24px 16px 50px}.hero,.card{background:#fffdf7;border:1px solid #e5e1d4;border-radius:22px;padding:22px;margin:14px 0;box-shadow:0 8px 25px #35452b0a}.hero{background:linear-gradient(130deg,#e3eddf,#f7ecd7)}h1{font-size:clamp(28px,6vw,42px);margin:8px 0}p{line-height:1.75;color:#68776d}.tag{color:#557b63;font-weight:700;font-size:13px;letter-spacing:2px}.stats{display:flex;gap:10px;flex-wrap:wrap}.stats span{background:#ffffffb8;border-radius:12px;padding:9px 12px}button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:#557b63;color:white;font-weight:700;margin:4px 5px 4px 0}.choice{display:block;width:100%;text-align:left;background:#f4f5ef;color:#26392f;border:1px solid #e0e5da;margin:9px 0;line-height:1.6}.choice:hover{background:#e8f0e5}.choice:disabled{cursor:default}.right{background:#e3f0e2!important;border-color:#6c9a70!important}.wrong{background:#f8e8e1!important;border-color:#c78370!important}.muted{background:#ecebe4;color:#33443a}.hidden{display:none}.progress{height:9px;background:#e9ece5;border-radius:10px;overflow:hidden}.progress i{display:block;height:100%;background:#79a17b;width:0}#feedback{min-height:35px;line-height:1.7;font-weight:600}.small{font-size:13px;color:#778278}.pill{display:inline-block;padding:6px 10px;background:#e8f0e5;color:#557b63;border-radius:20px;font-size:12px}
+</style></head>
+<body><main class="wrap">
+<div class="tag">HIGH SCHOOL CLASSICS QUEST</div>
+<section class="hero"><div>📜 高中语文 · 古诗词与文言文</div><h1>诗文冒险岛</h1><p>把背诵变成一场小小的冒险。通过上下句、关键字填空、文言词义和篇目识记，一点点把知识装进记忆宝箱。</p><div class="stats"><span>✨经验 <b id="xp">0</b></span><span>🏅答对 <b id="correct">0</b></span><span>🔥连对 <b id="streak">0</b></span></div></section>
+<section class="card"><h2>选择挑战模式</h2><p class="small">每轮 5 题。错题会自动加入复习清单。</p>
+<button data-mode="poem">🧭 诗句接龙</button><button data-mode="blank">🌱 关键字填空</button><button data-mode="classical">🔍 文言解码</button><button data-mode="author">🏮 篇目识记</button>
+<p id="chosen">当前模式：诗句接龙</p><button id="start">开始闯关 →</button></section>
+<section class="card"><div class="pill" id="modeLabel">诗句接龙</div><span class="small" id="count" style="float:right"></span><div class="progress"><i id="bar"></i></div><h2 id="question">准备好了吗？</h2><p id="source" class="small"></p><div id="options"></div><p id="feedback" aria-live="polite"></p><button class="muted hidden" id="hint">给我提示</button><button class="hidden" id="next">下一题 →</button></section>
+<section class="card"><h2>记忆宝箱 🎒</h2><p>本轮进度：<b id="progressText">尚未开始</b></p><p>待复习题目：<b id="reviewCount">0</b></p><div id="reviewList" class="small">还没有错题，继续保持！</div></section>
+<p class="small" style="text-align:center">先理解，再回忆；短时多次练习。每次多记住一点，就是进步。</p>
+</main>
+<script>
+const questions=[
+{m:"poem",s:"《劝学》· 荀子",q:"“青，取之于蓝，而青于蓝”的下一句是？",a:["冰，水为之，而寒于水。","木直中绳，輮以为轮。","故木受绳则直，金就砺则利。"],c:0,h:"仍然用自然现象作比。",e:"青色从蓝草中提取，却比蓝草更青；冰由水凝结，却比水更冷。"},
+{m:"poem",s:"《赤壁赋》· 苏轼",q:"“寄蜉蝣于天地，渺沧海之一粟”的下一句是？",a:["哀吾生之须臾，羡长江之无穷。","挟飞仙以遨游，抱明月而长终。","逝者如斯，而未尝往也。"],c:0,h:"下一句写人生短暂与长江无穷。",e:"以蜉蝣和沧海一粟写个人生命的短暂与渺小。"},
+{m:"poem",s:"《琵琶行并序》· 白居易",q:"“同是天涯沦落人”的下一句是？",a:["相逢何必曾相识。","此时无声胜有声。","犹抱琵琶半遮面。"],c:0,h:"这是全诗著名的情感共鸣句。",e:"两人虽素不相识，却因相似的身世而产生共鸣。"},
+{m:"blank",s:"《师说》· 韩愈",q:"师者，所以传道、授业、____也。",a:["解惑","明理","修身"],c:0,h:"老师会帮助学生解决不懂的问题。",e:"“解惑”就是解答疑惑。"},
+{m:"blank",s:"《琵琶行并序》· 白居易",q:"同是天涯____人，相逢何必曾相识。",a:["沦落","漂泊","失意"],c:0,h:"形容境遇相似、身世飘零。",e:"“沦落”点出两人境遇相似。"},
+{m:"blank",s:"《劝学》· 荀子",q:"君子博学而日参____乎己，则知明而行无过矣。",a:["省","察","悟"],c:0,h:"“检查、反省”自己。",e:"“参省”指检查反省。"},
+{m:"classical",s:"《师说》· 韩愈",q:"“人非生而知之者，孰能无惑？”中的“孰”是什么意思？",a:["谁","熟悉","怎么"],c:0,h:"把“孰能无惑”换成现代汉语。",e:"“孰”是疑问代词，意思是“谁”。"},
+{m:"classical",s:"《劝学》· 荀子",q:"“君子博学而日参省乎己”中的“日”是什么意思？",a:["每天","太阳","日期"],c:0,h:"这里表示动作发生的频率。",e:"“日”作状语，意思是“每天”。"},
+{m:"classical",s:"《赤壁赋》· 苏轼",q:"“纵一苇之所如”的“如”是什么意思？",a:["往、到","好像","如果"],c:0,h:"和“前往”意思接近。",e:"“如”在这里是“往、到”的意思。"},
+{m:"author",s:"篇目识记",q:"《赤壁赋》的作者是谁？",a:["苏轼","欧阳修","王安石"],c:0,h:"号东坡居士。",e:"苏轼，北宋文学家。"},
+{m:"author",s:"篇目识记",q:"《琵琶行并序》的作者是谁？",a:["白居易","杜甫","李白"],c:0,h:"《长恨歌》也是他的代表作。",e:"白居易，唐代诗人。"},
+{m:"author",s:"篇目识记",q:"《劝学》一文选自哪部典籍？",a:["《荀子》","《论语》","《孟子》"],c:0,h:"典籍名称与作者名字相同。",e:"《劝学》选自《荀子》。"}
+];
+const names={poem:"诗句接龙",blank:"关键字填空",classical:"文言解码",author:"篇目识记"};
+let mode="poem",round=[],idx=0,score=0,streak=0,xp=+(localStorage.paXp||0),correct=+(localStorage.paCorrect||0),review=JSON.parse(localStorage.paReview||"[]"),locked=false;
+const $=x=>document.getElementById(x);
+function update(){ $("xp").textContent=xp;$("correct").textContent=correct;$("streak").textContent=streak;$("reviewCount").textContent=review.length;$("reviewList").textContent=review.length?review.join("；"):"还没有错题，继续保持！"; }
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$("chosen").textContent="当前模式："+names[mode];});
+$("start").onclick=()=>{round=questions.filter(q=>q.m===mode).sort(()=>Math.random()-.5).slice(0,5);idx=0;score=0;$("modeLabel").textContent=names[mode];$("progressText").textContent="进行中";render();};
+function render(){locked=false;let q=round[idx];$("count").textContent="第 "+(idx+1)+" / "+round.length+" 题";$("bar").style.width=(idx/round.length*100)+"%";$("question").textContent=q.q;$("source").textContent=q.s;$("feedback").textContent="";$("options").innerHTML="";$("hint").classList.remove("hidden");$("next").classList.add("hidden");q.a.forEach((a,i)=>{let b=document.createElement("button");b.className="choice";b.textContent=String.fromCharCode(65+i)+"  "+a;b.onclick=()=>answer(i,b);$("options").appendChild(b);});}
+function answer(i,btn){if(locked)return;locked=true;let q=round[idx],bs=[...$("options").children];bs.forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add("right");});if(i===q.c){score++;correct++;xp+=10;streak++;$("feedback").textContent="答对啦！+10 经验。"+q.e;}else{streak=0;btn.classList.add("wrong");$("feedback").textContent="再记一遍：正确答案是“"+q.a[q.c]+"”。"+q.e;if(!review.includes(q.q))review.push(q.q);}localStorage.paXp=xp;localStorage.paCorrect=correct;localStorage.paReview=JSON.stringify(review);update();$("hint").classList.add("hidden");$("next").classList.remove("hidden");}
+$("hint").onclick=()=>{$("feedback").textContent="提示："+round[idx].h;};
+$("next").onclick=()=>{idx++;if(idx<round.length)render();else{$("question").textContent="本轮完成！";$("source").textContent="你答对了 "+score+" / "+round.length+" 题。";$("options").innerHTML="";$("feedback").textContent=score===5?"完美通关！继续保持！":"错题已加入记忆宝箱，隔一会儿再回忆一次。";$("bar").style.width="100%";$("count").textContent="闯关结束";$("progressText").textContent="已完成："+score+" / "+round.length;$("hint").classList.add("hidden");$("next").classList.add("hidden");}};
+update();
+</script></body></html>
